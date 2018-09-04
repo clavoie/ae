@@ -1,4 +1,5 @@
 // Package ae contains injectab;le wrappers around google app engine package.
 //
-// This package maps an app engine logger to logu.Logger
+// For an injectable AppEngine logger please see the logu package:
+//     https://godoc.org/github.com/clavoie/logu#NewAppEngineLogger
 package ae

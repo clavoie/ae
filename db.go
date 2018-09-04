@@ -44,7 +44,7 @@ func (db *dbImpl) Add(kind string, src interface{}) (Key, error) {
 		return nil, err
 	}
 
-	return newKey(key), nil
+	return NewKey(key), nil
 }
 
 func (db *dbImpl) Get(key Key, dst interface{}) (bool, error) {
@@ -69,7 +69,7 @@ func (db *dbImpl) NewKey(kind string, intID int64, parent Key) Key {
 	}
 
 	aeKey := datastore.NewKey(db.context.Context(), kind, "", intID, parentKey)
-	return newKey(aeKey)
+	return NewKey(aeKey)
 }
 
 func (db *dbImpl) NewQuery(kind string) Query {
@@ -83,5 +83,5 @@ func (db *dbImpl) Put(key Key, src interface{}) (Key, error) {
 		return nil, err
 	}
 
-	return newKey(aeKey), nil
+	return NewKey(aeKey), nil
 }

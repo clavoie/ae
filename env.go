@@ -6,21 +6,21 @@ import "os"
 // running environment is stored
 const nameEnv = "RSPP_ENV"
 
-// IEnv is a wrapper arnound environment variables provided to the
+// Env is a wrapper arnound environment variables provided to the
 // program
-type IEnv interface {
+type Env interface {
 	IsProd() bool
 	IsStaging() bool
 }
 
-// envImpl is an implementation of IEnv
+// envImpl is an implementation of Env
 type envImpl struct {
 	isProd    bool
 	isStaging bool
 }
 
-// NewEnv returns a new instance of IEnv
-func NewEnv() IEnv {
+// NewEnv returns a new instance of Env
+func NewEnv() Env {
 	return &envImpl{
 		isProd:    os.Getenv(nameEnv) == "prod",
 		isStaging: os.Getenv(nameEnv) == "staging",

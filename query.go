@@ -33,7 +33,7 @@ func newQuery(context Context, kind string) Query {
 	return newQueryInternal(context, datastore.NewQuery(kind))
 }
 
-// newQueryInternal creates a new IQuery from an existing datastore.Query.
+// newQueryInternal creates a new Query from an existing datastore.Query.
 // This func should only be called by this file
 func newQueryInternal(context Context, query *datastore.Query) Query {
 	return &queryImpl{
@@ -56,7 +56,7 @@ func (q *queryImpl) GetAll(dst interface{}) ([]Key, error) {
 
 	ikeys := make([]Key, len(keys))
 	for index, key := range keys {
-		ikeys[index] = newKey(key)
+		ikeys[index] = NewKey(key)
 	}
 
 	return ikeys, nil
