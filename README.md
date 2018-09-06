@@ -80,5 +80,9 @@ func init() {
   }
 
   err = httpResolver.SetDefaultServeMux(httpDefs)
+  
+  if err != nil {
+    panic(err)
+  }
 }
 ```
