@@ -54,7 +54,7 @@ func (t *taskQueueImpl) Queue(hostname string, task *Task) error {
 		task.aeTask.Header.Add("Host", hostname)
 	}
 
-	_, err = taskqueue.Add(context, task.aeTask, task.queue)
+	_, err := taskqueue.Add(context, task.aeTask, task.queue)
 	return err
 }
 
