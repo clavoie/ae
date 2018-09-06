@@ -2,10 +2,14 @@ package ae
 
 import "google.golang.org/appengine/datastore"
 
-// Query is a wrapper around app engine's datastore Query object
+// Query is a wrapper around app engine's datastore Query object.
+// See: https://cloud.google.com/appengine/docs/standard/go/datastore/reference#Query
+// for details.
 type Query interface {
 	// Filter applies a filter to a query, returning the new
-	// query
+	// query.
+	// See: https://cloud.google.com/appengine/docs/standard/go/datastore/reference#Query
+	// Filter() for reference
 	Filter(string, interface{}) Query
 
 	// GetAll runs the query and returns all results and keys for
@@ -28,7 +32,7 @@ type queryImpl struct {
 	query   *datastore.Query
 }
 
-// newQuery creates a new IQuery from a database kind string
+// newQuery creates a new Query from a database kind string
 func newQuery(context Context, kind string) Query {
 	return newQueryInternal(context, datastore.NewQuery(kind))
 }

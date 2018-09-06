@@ -4,8 +4,6 @@ import (
 	"net/url"
 	"time"
 
-	"google.golang.org/appengine"
-	"google.golang.org/appengine/log"
 	"google.golang.org/appengine/taskqueue"
 )
 
@@ -21,7 +19,7 @@ type TaskQueue interface {
 	NewTask(queue, path string, params url.Values) *Task
 
 	// Queue adds a Task to the AppEngine queue
-	Queue(*Task) error
+	Queue(hostname string, task *Task) error
 
 	// SetDelay sets the Delay value of the task
 	SetDelay(time.Duration, *Task)
@@ -49,16 +47,13 @@ func (t *taskQueueImpl) NewTask(queueName, path string, params url.Values) *Task
 	}
 }
 
-func (t *taskQueueImpl) Queue(task *Task) error {
+func (t *taskQueueImpl) Queue(hostname string, task *Task) error {
 	context := t.context.Context()
-	hostName, err := appengine.ModuleHostname(context, "cron", "", "")
 
-	if err != nil {
-		log.Errorf(context, "ae:task:Queue cannot get cron hostname: %v", err)
-		return err
+	if hostname != "" {
+		task.aeTask.Header.Add("Host", hostname)
 	}
 
-	task.aeTask.Header.Add("Host", hostName)
 	_, err = taskqueue.Add(context, task.aeTask, task.queue)
 	return err
 }

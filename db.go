@@ -4,7 +4,8 @@ import "google.golang.org/appengine/datastore"
 
 // Db is a wrapper around app engine's datastore package.
 type Db interface {
-	// Add inserts a value into the datastore
+	// Add inserts a value into the datastore, creating a new incomplete
+	// key, inserting the value, and returning the new complete key.
 	Add(string, interface{}) (Key, error)
 
 	// Get returns an object from the database. The first return value
@@ -16,7 +17,7 @@ type Db interface {
 	// final two arguments. The kind is required
 	NewKey(string, int64, Key) Key
 
-	// NewQuery returns a new IQuery from a db kind string
+	// NewQuery returns a new Query from a db kind string
 	NewQuery(string) Query
 
 	// Put does an upsert on an entity

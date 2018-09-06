@@ -8,7 +8,6 @@ func NewDiDefs() []*di.Def {
 		{NewAppEngine, di.PerHttpRequest},
 		{NewContext, di.PerHttpRequest},
 		{NewDb, di.PerHttpRequest},
-		{NewEnv, di.Singleton},
 		{NewKeyDecoder, di.Singleton},
 		{NewTaskQueue, di.PerHttpRequest},
 	}
