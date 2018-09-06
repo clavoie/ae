@@ -6,10 +6,12 @@ Wrappers around Google's AppEngine Go packages, meant for use with a dependency 
 
 The wrapper interfaces aim to keep the names, parameter types, and parameter orders the same as the functions of the packages they wrap. Using the wrappers should consist of setting up your dependency injection system and then using the wrappers as you would the package functions directly.
 
+One major advantage of using this package with a dependency injection system is you no longer have to keep track of the `r *http.Request` or `c context.Context` as those are injected into the dependency wrappers.
+
 ```go
 fnuc MyHandler(app ae.AppEngine, db ae.Db, log logu.Logger) {
   // wraps the appengine package
-  if app.IsDevAppServer() {
+  if app.ModuleName() != "address" {
     return;
   }
   
@@ -29,32 +31,32 @@ fnuc MyHandler(app ae.AppEngine, db ae.Db, log logu.Logger) {
 ```
 ## Setup
 
-Below is a more complete example of how main.go file would be set up for an App Engine service:
+Below is a more complete example of how the main.go file would be set up for an App Engine service:
 
 ```go
 package main
 
 import (
   "myPackage"
-	"net/http"
+  "net/http"
 
-	"github.com/clavoie/di"
-	"github.com/clavoie/erru"
-	"github.com/clavoie/logu"
+  "github.com/clavoie/di"
+  "github.com/clavoie/erru"
+  "github.com/clavoie/logu"
 )
 
 var httpResolver di.IHttpResolver
 
 func onResolveErr(err *di.ErrResolve, w http.ResponseWriter, r *http.Request) {
-	logger := logu.NewAppEngineLogger(r)
-	logger.Errorf("err encountered while resolving dependencies: %v", err.String())
+  logger := logu.NewAppEngineLogger(r)
+  logger.Errorf("err encountered while resolving dependencies: %v", err.String())
 
-	httpErr, isHttpErr := err.Err.(erru.HttpErr)
-	if isHttpErr {
-		w.WriteHeader(httpErr.StatusCode())
-	} else {
-		w.WriteHeader(http.StatusInternalServerError)
-	}
+  httpErr, isHttpErr := err.Err.(erru.HttpErr)
+  if isHttpErr {
+    w.WriteHeader(httpErr.StatusCode())
+  } else {
+    w.WriteHeader(http.StatusInternalServerError)
+  }
 }
 
 var httpDefs = []*di.HttpDef{
@@ -64,18 +66,19 @@ var httpDefs = []*di.HttpDef{
 }
 
 func init() {
-	var err error
+  var err error
 
-	httpResolver, err = di.NewResolver(onResolveErr, 
+  httpResolver, err = di.NewResolver(onResolveErr, 
     ae.NewDiDefs(), 
     logu.NewAppEngineDiDefs(),
+    myPackage.NewDiDefs(),
     // etc, your service deps here
     )
 
-	if err != nil {
-		panic(err)
-	}
+  if err != nil {
+    panic(err)
+  }
 
-	err = httpResolver.SetDefaultServeMux(httpDefs)
+  err = httpResolver.SetDefaultServeMux(httpDefs)
 }
 ```
