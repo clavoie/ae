@@ -18,7 +18,10 @@ type TaskQueue interface {
 	// NewTask creates a new POSTTask for a particular queue and returns it.
 	NewTask(queue, path string, params url.Values) *Task
 
-	// Queue adds a Task to the AppEngine queue
+	// Queue adds a Task to the AppEngine queue. If your task needs to run on
+	// a service different from the one sending the task, the hostname can
+	// be added here and it will be added to the Host header of the task. Otherwise
+	// hostname can be ""
 	Queue(hostname string, task *Task) error
 
 	// SetDelay sets the Delay value of the task
